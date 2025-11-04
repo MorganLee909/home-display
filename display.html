@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            *{margin:0;padding:0;box-sizing:border-box}
+            html, body{
+                height: 100vh;
+            }
+            body{
+                background: black;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                align-items: center;
+            }
+            .dateTime{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 32px;
+            }
+            .weatherBlock{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                padding: 45px 15px 25px 15px;
+                border: 1px solid white;
+                height: 250px;
+            }
+            .weatherBlock h2{
+                position: absolute;
+                width: 100%;
+                text-align: center;
+                top: 15px;
+                left: 0;
+            }
+            .weatherBlock img{
+                height: 125px;
+                width: 125px;
+            }
+            .condition{
+                margin-right: 35px;
+            }
+            .conditionText{
+                text-align: center;
+            }
+            .weatherInfo{
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                height: 100%;
+                padding: 15px 0;
+            }
+            .weatherInfo p{
+                font-size: 18px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="dateTime">
+            <p id="date"></p>
+            <p id="time"></p>
+        </div>
+        <div class="weather">
+            <div id="currentWeather" class="weatherBlock">
+                <h2>Current Weather</h2>
+                <div class="condition">
+                    <img> 
+                    <p class="conditionText"></p>
+                </div>
+                <div class="weatherInfo">
+                    <p id="temp"></p>
+                    <p id="feels"></p>
+                    <p id="wind"></p>
+                    <p id="humidity"</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        const setDateTime = ()=>{
+            const dateTime = new Date();
+            document.getElementById("date").textContent = dateTime.toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+            document.getElementById("time").textContent = dateTime.toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            });
+        }
+
+        const getWeather = ()=>{
+            fetch("https://api.weatherapi.com/v1/current.json?key=519f51763fa8477b864184849251502&q=29576&aqi=no", {
+                method: "get"
+            })
+                .then(r=>r.json())
+                .then((response)=>{
+                    const tempDisplay = `Temperature: ${response.current.temp_f}\u00B0F`;
+                    document.getElementById("temp").textContent = tempDisplay;
+
+                    const feelsLike = `Feels Like: ${response.current.feelslike_f}\u00B0F`;
+                    document.getElementById("feels").textContent = feelsLike;
+
+                    const currentWeatherImage = document.querySelector("#currentWeather img");
+                    currentWeatherImage.src = `https:${response.current.condition.icon}`;
+                    currentWeatherImage.alt = response.current.condition.text;
+
+                    const currentWeatherText = document.querySelector("#currentWeather .conditionText");
+                    currentWeatherText.textContent = response.current.condition.text;
+
+                    const currentWind = `Wind: ${response.current.wind_mph}mph ${response.current.wind_dir}`;
+                    document.getElementById("wind").textContent = currentWind;
+
+                    const humidity = `Humidity: ${response.current.humidity}%`;
+                    document.getElementById("humidity").textContent = humidity;
+                })
+                .catch((err)=>{
+                    console.log(err);
+                });
+        }
+
+        getWeather();
+        setInterval(getWeather, 60000);
+        setDateTime();
+        setInterval(setDateTime, 10000);
+    </script>
+</html>
