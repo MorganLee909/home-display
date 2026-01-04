@@ -82,7 +82,8 @@ body{
   padding:10px 12px;
   border-radius:var(--radius-sm);
   background:#00000038;
-  border:1px solid rgba(255,255,255,.08)
+  border:1px solid rgba(255,255,255,.08);
+  position: relative;
 }
 
 #date{
@@ -119,9 +120,8 @@ body{
   border-radius:var(--radius-sm);
   background:radial-gradient(600px 240px at 20% 10%,rgba(76,201,240,.1),transparent 60%),#0000002e;
   border:1px solid rgba(255,255,255,.08);
-  display:grid;
   grid-template-rows:auto auto minmax(0,1fr);
-  gap:8px
+  gap:8px;
 }
 
 .weatherBlock h2:before{
@@ -133,43 +133,16 @@ body{
   box-shadow:0 0 18px #4cc9f059
 }
 
-.condition{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:8px 10px;
-  border-radius:14px;
-  background:#ffffff0a;
-  border:1px solid rgba(255,255,255,.06);
-  min-width:0
-}
-
-.condition img{
-  width:clamp(34px,2.2vh,48px);
-  height:clamp(34px,2.2vh,48px);
-  object-fit:contain;
-  filter:drop-shadow(0 6px 10px rgba(0,0,0,.45));
-  flex:0 0 auto
-}
-
-.conditionText{
-  margin:0;
-  font-size:var(--cond-size);
-  font-weight:700;
-  letter-spacing:.15px;
-  color:var(--text);
-  min-width:0;
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:2;
-  overflow:hidden;
-  line-height:1.10
+#conditionLogo{
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 /* FIX 1: make weatherInfo a strict 2x2 grid so the last two rows can't get clipped */
 .weatherInfo{
-  min-width:0;
-  min-height:50px;
+  height: 100%;
 
   display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr);
@@ -192,7 +165,7 @@ body{
 
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:center;
 
   min-width:0;
   min-height:0;

@@ -42,19 +42,15 @@ const getWeather = ()=>{
     })
         .then(r=>r.json())
         .then((response)=>{
-            console.log(response);
             const tempDisplay = `Temperature: ${response.current.temp_f}\u00B0F`;
             document.getElementById("temp").textContent = tempDisplay;
 
             const feelsLike = `Feels Like: ${response.current.feelslike_f}\u00B0F`;
             document.getElementById("feels").textContent = feelsLike;
 
-            const currentWeatherImage = document.querySelector("#currentWeather img");
+            const currentWeatherImage = document.getElementById("conditionLogo");
             currentWeatherImage.src = `https:${response.current.condition.icon}`;
             currentWeatherImage.alt = response.current.condition.text;
-
-            const currentWeatherText = document.querySelector("#currentWeather .conditionText");
-            currentWeatherText.textContent = response.current.condition.text;
 
             const currentWind = `Wind: ${response.current.wind_mph}mph ${response.current.wind_dir}`;
             document.getElementById("wind").textContent = currentWind;
