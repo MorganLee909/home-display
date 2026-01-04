@@ -13,6 +13,28 @@ const setDateTime = ()=>{
     });
 }
 
+const renderForecast = (f)=>{
+    const head = document.getElementById("forecastHead").children[0];
+    const body = document.getElementById("forecastBody");
+
+    for(let i = 0; i < f.length; i++){
+        let date = new Date(f[i].date);
+        head.children[i+1].textContent = date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "2-digit"
+        });
+
+        body.children[0].children[i+1] = `${f[i].day.mintemp_f} - ${f[i].day.maxtemp_f}`;
+        body.children[1].children[i+1] = `${f[i].day.avghumidity}%`;
+        body.children[2].children[i+1] = `${f[i].day.daily_chance_of_rain}%`;
+        body.children[3].children[i+1] = f[i].day.totalprecip_in;
+        body.children[4].children[i+1] = f[i].day.maxwind_mph;
+        body.children[5].children[i+1] = f[i].astro.sunrise;
+        body.children[6].children[i+1] = f[i].astro.sunset;
+    }
+}
+
 const getWeather = ()=>{
     fetch("https://api.weatherapi.com/v1/forecast.json?key=519f51763fa8477b864184849251502&q=29576&days=3&aqi=no", {
         method: "get"
@@ -38,6 +60,8 @@ const getWeather = ()=>{
 
             const humidity = `Humidity: ${response.current.humidity}%`;
             document.getElementById("humidity").textContent = humidity;
+
+            renderForecast(response.forecast.forecastday);
         })
         .catch((err)=>{
             console.log(err);
