@@ -1,5 +1,5 @@
 /* =========
-   Dark TV Dashboard Theme (TV-safe)
+   Dark 4K TV Dashboard Theme (grid-only, no media queries)
    Copy/paste into <style>...</style>
    ========= */
 
@@ -17,14 +17,12 @@
   /* Accents */
   --accent: #4cc9f0;     /* cool cyan */
   --accent-2: #a78bfa;   /* soft purple */
-  --good: #34d399;
-  --warn: #fbbf24;
 
-  /* Layout */
-  --radius: 18px;
-  --radius-sm: 12px;
-  --pad: 18px;
-  --gap: 16px;
+  /* 4K layout tuning */
+  --pad: 26px;
+  --gap: 22px;
+  --radius: 22px;
+  --radius-sm: 14px;
 
   /* Type */
   --font: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", Arial, sans-serif;
@@ -38,87 +36,41 @@ body{
   font-family: var(--font);
   color: var(--text);
   background:
-    radial-gradient(1200px 600px at 20% 10%, rgba(76,201,240,0.12), transparent 60%),
-    radial-gradient(900px 500px at 85% 20%, rgba(167,139,250,0.10), transparent 55%),
-    radial-gradient(800px 600px at 50% 100%, rgba(255,255,255,0.06), transparent 55%),
+    radial-gradient(1600px 800px at 20% 10%, rgba(76,201,240,0.12), transparent 60%),
+    radial-gradient(1200px 700px at 85% 20%, rgba(167,139,250,0.10), transparent 55%),
+    radial-gradient(1200px 900px at 50% 100%, rgba(255,255,255,0.06), transparent 55%),
     var(--bg);
-  overflow:hidden; /* TV: never scroll */
-
+  overflow:hidden; /* never scroll on TV */
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
 }
 
 /* =========
-   Layout: flex fallback + grid when supported
+   Grid Layout (2x2 always)
    ========= */
-
-/* Fallback first (works even on weak TV browsers) */
 .grid{
   height:100vh;
   width:100vw;
-  padding: 18px;
-
-  display:flex;
-  flex-wrap:wrap;
+  padding: var(--pad);
+  display:grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.45fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--gap);
-
   filter: brightness(0.98);
 }
 
-/* 2x2 tiles using flex fallback */
-.grid > .topLeft,
-.grid > .topRight,
-.grid > .bottomLeft,
-.grid > .bottomRight{
+/* Ensure grid children can shrink and never overflow their column */
+.topLeft, .topRight, .bottomLeft, .bottomRight{
   position:relative;
+  min-width: 0;
   min-height: 0;
   border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
   border: 1px solid var(--border);
   box-shadow:
-    0 10px 30px rgba(0,0,0,0.35),
+    0 14px 40px rgba(0,0,0,0.38),
     inset 0 1px 0 rgba(255,255,255,0.06);
   overflow:hidden;
-
-  flex: 1 1 calc(50% - (var(--gap) / 2));
-  height: calc(50vh - (18px + (var(--gap) / 2)));
-  min-width: 520px;
-}
-
-/* Prefer CSS Grid if supported */
-@supports (display: grid){
-  .grid{
-    display:grid;
-    grid-template-columns: 1.1fr 1.4fr;
-    grid-template-rows: 1fr 1fr;
-    gap: var(--gap);
-  }
-
-  .grid > .topLeft,
-  .grid > .topRight,
-  .grid > .bottomLeft,
-  .grid > .bottomRight{
-    height: auto;
-    min-width: 0;
-  }
-}
-
-/* Only stack on truly small screens (avoid TVs triggering this) */
-@media (max-width: 720px){
-  .grid{
-    display:flex;
-    flex-direction:column;
-    flex-wrap:nowrap;
-  }
-
-  .grid > .topLeft,
-  .grid > .topRight,
-  .grid > .bottomLeft,
-  .grid > .bottomRight{
-    flex: 0 0 auto;
-    height: auto;
-    min-width: 0;
-  }
 }
 
 /* =========
@@ -128,15 +80,18 @@ body{
   display:flex;
   flex-direction:column;
   padding: var(--pad);
-  gap: 14px;
+  gap: 18px;
+  min-width: 0;
+  min-height: 0;
 }
 
 /* Date/Time card */
 .dateTime{
+  flex: 0 0 auto;
   display:flex;
   flex-direction:column;
-  gap: 6px;
-  padding: 14px 16px;
+  gap: 8px;
+  padding: 16px 18px;
   border-radius: var(--radius-sm);
   background: rgba(0,0,0,0.22);
   border: 1px solid rgba(255,255,255,0.08);
@@ -144,50 +99,48 @@ body{
 
 #date{
   margin:0;
-  font-size: 22px;
+  font-size: clamp(20px, 1.05vw, 34px);
   letter-spacing: 0.4px;
   color: var(--muted);
 }
 
 #time{
   margin:0;
-  font-size: 56px;
-  font-weight: 700;
+  font-size: clamp(52px, 2.6vw, 104px);
+  font-weight: 720;
   letter-spacing: 1.2px;
-  line-height: 1.05;
+  line-height: 1.02;
   color: var(--text);
-}
-
-@media (max-width: 720px){
-  #time{ font-size: 48px; }
 }
 
 /* Weather block */
 .weather{
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
+  min-width: 0;
   display:flex;
 }
 
 .weatherBlock{
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
-  padding: 16px;
+  min-width: 0;
+  padding: 18px;
   border-radius: var(--radius-sm);
   background:
-    radial-gradient(600px 240px at 20% 10%, rgba(76,201,240,0.10), transparent 60%),
+    radial-gradient(900px 320px at 20% 10%, rgba(76,201,240,0.10), transparent 60%),
     rgba(0,0,0,0.18);
   border: 1px solid rgba(255,255,255,0.08);
   display:flex;
   flex-direction:column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .weatherBlock h2{
   margin:0;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-size: clamp(18px, 0.9vw, 26px);
+  font-weight: 750;
+  letter-spacing: 0.6px;
   color: var(--text);
   display:flex;
   align-items:center;
@@ -207,95 +160,101 @@ body{
 .condition{
   display:flex;
   align-items:center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 14px;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.06);
+  min-width: 0;
 }
 
 .condition img{
-  width: 54px;
-  height: 54px;
+  width: clamp(48px, 2.0vw, 72px);
+  height: clamp(48px, 2.0vw, 72px);
   object-fit: contain;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.45));
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.45));
+  flex: 0 0 auto;
 }
 
 .conditionText{
   margin:0;
-  font-size: 22px;
-  font-weight: 650;
+  font-size: clamp(20px, 1.05vw, 34px);
+  font-weight: 680;
   letter-spacing: 0.2px;
   color: var(--text);
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Weather info list */
 .weatherInfo{
   display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 14px;
   margin-top: 2px;
-}
-
-@media (max-width: 720px){
-  .weatherInfo{ grid-template-columns: 1fr; }
+  min-width: 0;
 }
 
 .weatherInfo p{
   margin:0;
-  padding: 10px 12px;
-  border-radius: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
   background: rgba(255,255,255,0.035);
   border: 1px solid rgba(255,255,255,0.06);
-  font-size: 18px;
+  font-size: clamp(16px, 0.85vw, 26px);
   color: var(--muted);
   display:flex;
   align-items:center;
   justify-content:space-between;
+  min-width: 0;
 }
 
 .weatherInfo p strong{
   color: var(--text);
 }
 
-/* If you don't wrap labels/values in <strong>, still make the numbers pop a bit */
 #temp, #feels, #wind, #humidity{ color: var(--text); }
-#temp{ font-size: 20px; font-weight: 650; }
-#feels, #wind, #humidity{ font-weight: 550; }
+#temp{ font-weight: 750; }
+#feels, #wind, #humidity{ font-weight: 600; }
 
 /* =========
    Top Right: Radar Image
    ========= */
 .topRight{
-  padding: 12px;
+  padding: 14px;
   display:flex;
   align-items:center;
   justify-content:center;
   background:
-    radial-gradient(800px 520px at 70% 10%, rgba(167,139,250,0.09), transparent 55%),
+    radial-gradient(1200px 800px at 70% 10%, rgba(167,139,250,0.09), transparent 55%),
     rgba(0,0,0,0.10);
+  min-width: 0;
+  min-height: 0;
 }
 
 #radar{
   width:100%;
   height:100%;
   object-fit: cover;
-  border-radius: calc(var(--radius) - 6px);
+  border-radius: calc(var(--radius) - 8px);
   border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+  box-shadow: 0 18px 55px rgba(0,0,0,0.50);
   filter: contrast(1.04) saturate(1.05);
+  display:block;
 }
 
+/* Label overlay */
 .topRight::after{
   content:"Radar";
   position:absolute;
-  top: 12px;
-  left: 14px;
-  padding: 6px 10px;
-  font-size: 14px;
-  letter-spacing: 0.6px;
+  top: 14px;
+  left: 16px;
+  padding: 8px 12px;
+  font-size: clamp(12px, 0.65vw, 18px);
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.72);
+  color: rgba(255,255,255,0.74);
   background: rgba(0,0,0,0.40);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 999px;
@@ -306,8 +265,10 @@ body{
    Bottom Left: Forecast Table
    ========= */
 .bottomLeft{
-  padding: 12px;
+  padding: 14px;
   display:flex;
+  min-width: 0;
+  min-height: 0;
 }
 
 table{
@@ -316,41 +277,47 @@ table{
   border-collapse: separate;
   border-spacing: 0;
   overflow:hidden;
-  border-radius: calc(var(--radius) - 6px);
+  border-radius: calc(var(--radius) - 8px);
   background: rgba(0,0,0,0.18);
   border: 1px solid rgba(255,255,255,0.08);
+  table-layout: fixed; /* prevents the left column from blowing out widths */
 }
 
 /* Head row */
 thead th{
-  padding: 12px 10px;
-  font-size: 15px;
-  color: rgba(255,255,255,0.80);
-  letter-spacing: 0.4px;
+  padding: 14px 10px;
+  font-size: clamp(13px, 0.70vw, 18px);
+  color: rgba(255,255,255,0.82);
+  letter-spacing: 0.7px;
   text-transform: uppercase;
-  background:
-    linear-gradient(90deg, rgba(76,201,240,0.10), rgba(167,139,250,0.08));
+  background: linear-gradient(90deg, rgba(76,201,240,0.10), rgba(167,139,250,0.08));
   border-bottom: 1px solid rgba(255,255,255,0.10);
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 tbody td{
-  padding: 12px 10px;
-  font-size: 16px;
+  padding: 14px 10px;
+  font-size: clamp(14px, 0.78vw, 20px);
   color: var(--muted);
   border-bottom: 1px solid rgba(255,255,255,0.06);
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Left column labels */
 tbody td:first-child{
-  width: 38%;
-  color: rgba(255,255,255,0.86);
-  font-weight: 650;
+  width: 42%;
+  color: rgba(255,255,255,0.88);
+  font-weight: 720;
   letter-spacing: 0.2px;
   background: rgba(255,255,255,0.03);
   border-right: 1px solid rgba(255,255,255,0.06);
 }
 
-/* Center the forecast values */
+/* Center values */
 tbody td:not(:first-child),
 thead th:not(:first-child){
   text-align:center;
@@ -368,19 +335,22 @@ tbody tr:last-child td{ border-bottom: none; }
    Bottom Right: YouTube iframe
    ========= */
 .bottomRight{
-  padding: 10px;
+  padding: 14px;
   background:
-    radial-gradient(900px 600px at 20% 20%, rgba(76,201,240,0.08), transparent 55%),
+    radial-gradient(1400px 900px at 20% 20%, rgba(76,201,240,0.08), transparent 55%),
     rgba(0,0,0,0.10);
+  min-width: 0;
+  min-height: 0;
 }
 
 .bottomRight iframe{
   width:100%;
   height:100%;
   border: 1px solid rgba(255,255,255,0.10);
-  border-radius: calc(var(--radius) - 6px);
-  box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+  border-radius: calc(var(--radius) - 8px);
+  box-shadow: 0 22px 70px rgba(0,0,0,0.58);
   background: #000;
+  display:block;
 }
 
 /* =========
