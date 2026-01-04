@@ -42,7 +42,6 @@ const getWeather = ()=>{
     })
         .then(r=>r.json())
         .then((response)=>{
-            console.log(response);
             const tempDisplay = `${response.current.temp_f}\u00B0F`;
             document.getElementById("temp").textContent = tempDisplay;
 
