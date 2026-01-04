@@ -42,20 +42,26 @@ const getWeather = ()=>{
     })
         .then(r=>r.json())
         .then((response)=>{
-            const tempDisplay = `Temperature: ${response.current.temp_f}\u00B0F`;
+            console.log(response);
+            const tempDisplay = `${response.current.temp_f}\u00B0F`;
             document.getElementById("temp").textContent = tempDisplay;
 
-            const feelsLike = `Feels Like: ${response.current.feelslike_f}\u00B0F`;
+            const feelsLike = `Feels Like ${response.current.feelslike_f}\u00B0F`;
             document.getElementById("feels").textContent = feelsLike;
 
             const currentWeatherImage = document.getElementById("conditionLogo");
             currentWeatherImage.src = `https:${response.current.condition.icon}`;
             currentWeatherImage.alt = response.current.condition.text;
 
-            const currentWind = `Wind: ${response.current.wind_mph}mph ${response.current.wind_dir}`;
-            document.getElementById("wind").textContent = currentWind;
+            const currentWind = `Winds ${response.current.wind_mph}mph ${response.current.wind_dir}`;
+            const currentElem = document.querySelector("#wind p");
+            const newElem = document.createElement("p");
+            newElem.textContent = currentWind;
+            currentElem.replaceWith(newElem);
 
-            const humidity = `Humidity: ${response.current.humidity}%`;
+            document.querySelector("#wind svg").style.transform = `rotate(${response.current.wind_degree}deg)`;
+
+            const humidity = `${response.current.humidity}% humidity`;
             document.getElementById("humidity").textContent = humidity;
 
             renderForecast(response.forecast.forecastday);
