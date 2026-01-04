@@ -1,3 +1,8 @@
+document.getElementById("one").textContent = window.innerWidth;
+document.getElementById("two").textContent = window.innerHeight;
+document.getElementById("three").textContent = window.devicePixelRatio;
+document.getElementById("four").textContent = navigator.userAgent;
+
 const setDateTime = ()=>{
     const dateTime = new Date();
     document.getElementById("date").textContent = dateTime.toLocaleDateString("en-US", {
