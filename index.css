@@ -1,38 +1,38 @@
 /* =========
-   Dark TV Dashboard Theme (4K grid-hardened, no media queries)
+   Dark TV Dashboard Theme (4K, grid-hardened, NO media queries)
+   Updated to:
+   - show more than just "Sunny" (allow 2-line wrap for condition text)
+   - show the full table (tighter row heights + fonts)
    ========= */
 
 :root{
-  /* Core palette */
   --bg: #0b0f16;
   --border: rgba(255,255,255,0.10);
 
   --text: rgba(255,255,255,0.92);
   --muted: rgba(255,255,255,0.68);
 
-  /* Accents */
   --accent: #4cc9f0;
   --accent-2: #a78bfa;
 
-  /* Layout */
-  --outer-pad: 18px;
-  --gap: 16px;
+  --outer-pad: 16px;
+  --gap: 14px;
   --radius: 18px;
   --radius-sm: 12px;
 
-  /* Type */
   --font: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", Arial, sans-serif;
 
-  /* 4K-safe sizing (kept conservative so nothing can dominate) */
-  --time-size: clamp(44px, 3.1vh, 76px);
-  --date-size: clamp(18px, 1.35vh, 26px);
+  /* Sizing tuned to fit all content in a 2x2 4K layout */
+  --time-size: clamp(40px, 2.55vh, 62px);
+  --date-size: clamp(16px, 1.25vh, 22px);
 
-  --h2-size: clamp(16px, 1.25vh, 22px);
-  --cond-size: clamp(18px, 1.55vh, 26px);
+  --h2-size: clamp(15px, 1.10vh, 19px);
+  --cond-size: clamp(17px, 1.35vh, 22px);
 
-  --info-size: clamp(14px, 1.25vh, 20px);
-  --table-head: clamp(12px, 1.10vh, 16px);
-  --table-cell: clamp(13px, 1.18vh, 18px);
+  --info-size: clamp(13px, 1.10vh, 18px);
+
+  --table-head: clamp(12px, 1.00vh, 15px);
+  --table-cell: clamp(12px, 1.05vh, 16px);
 }
 
 *{ box-sizing:border-box; }
@@ -48,16 +48,12 @@ body{
     radial-gradient(800px 600px at 50% 100%, rgba(255,255,255,0.06), transparent 55%),
     var(--bg);
   overflow:hidden;
-
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
 }
 
 /* =========
    Grid Layout (2x2 always)
-   Key fixes:
-   - minmax(0, ...) on tracks so content can't force columns wider
-   - min-width/min-height:0 on items so flex children can shrink
    ========= */
 .grid{
   height:100vh;
@@ -93,7 +89,6 @@ body{
 
 /* =========
    Top Left: Date/Time + Current Weather
-   Tightened to prevent it from swallowing the tile.
    ========= */
 .topLeft{
   display:flex;
@@ -101,8 +96,8 @@ body{
   min-width: 0;
   min-height: 0;
 
-  padding: 14px;
-  gap: 12px;
+  padding: 12px;
+  gap: 10px;
 }
 
 /* Date/Time card */
@@ -112,9 +107,9 @@ body{
 
   display:flex;
   flex-direction:column;
-  gap: 6px;
+  gap: 4px;
 
-  padding: 12px 14px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
   background: rgba(0,0,0,0.22);
   border: 1px solid rgba(255,255,255,0.08);
@@ -123,14 +118,14 @@ body{
 #date{
   margin:0;
   font-size: var(--date-size);
-  letter-spacing: 0.4px;
+  letter-spacing: 0.35px;
   color: var(--muted);
 }
 
 #time{
   margin:0;
   font-size: var(--time-size);
-  font-weight: 750;
+  font-weight: 760;
   letter-spacing: 0.8px;
   line-height: 1.02;
   color: var(--text);
@@ -145,7 +140,6 @@ body{
   flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
-
   display:flex;
 }
 
@@ -154,7 +148,7 @@ body{
   min-width: 0;
   min-height: 0;
 
-  padding: 12px;
+  padding: 10px;
   border-radius: var(--radius-sm);
   background:
     radial-gradient(600px 240px at 20% 10%, rgba(76,201,240,0.10), transparent 60%),
@@ -163,13 +157,13 @@ body{
 
   display:flex;
   flex-direction:column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .weatherBlock h2{
   margin:0;
   font-size: var(--h2-size);
-  font-weight: 800;
+  font-weight: 820;
   letter-spacing: 0.5px;
 
   display:flex;
@@ -186,13 +180,13 @@ body{
   box-shadow: 0 0 18px rgba(76,201,240,0.35);
 }
 
-/* Condition row */
+/* Condition row (allow 2-line wrap so you see more than "Sunny") */
 .condition{
   display:flex;
   align-items:center;
-  gap: 12px;
+  gap: 10px;
 
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: 14px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.06);
@@ -201,8 +195,8 @@ body{
 }
 
 .condition img{
-  width: clamp(42px, 3.0vh, 64px);
-  height: clamp(42px, 3.0vh, 64px);
+  width: clamp(38px, 2.4vh, 52px);
+  height: clamp(38px, 2.4vh, 52px);
   object-fit: contain;
   filter: drop-shadow(0 6px 10px rgba(0,0,0,0.45));
   flex: 0 0 auto;
@@ -212,19 +206,24 @@ body{
   margin:0;
   font-size: var(--cond-size);
   font-weight: 700;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.15px;
+  color: var(--text);
 
   min-width: 0;
-  overflow:hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+
+  /* 2-line clamp */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.15;
 }
 
-/* Weather info list */
+/* Weather info list (tighter) */
 .weatherInfo{
   display:grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 10px 12px;
+  gap: 8px 10px;
 
   min-width: 0;
   min-height: 0;
@@ -232,7 +231,7 @@ body{
 
 .weatherInfo p{
   margin:0;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: 14px;
 
   background: rgba(255,255,255,0.035);
@@ -268,9 +267,6 @@ body{
   background:
     radial-gradient(800px 520px at 70% 10%, rgba(167,139,250,0.09), transparent 55%),
     rgba(0,0,0,0.10);
-
-  min-width: 0;
-  min-height: 0;
 }
 
 #radar{
@@ -302,11 +298,7 @@ body{
 }
 
 /* =========
-   Bottom Left: Forecast Table
-   Key fixes:
-   - table-layout: fixed
-   - ellipsis
-   - reduced padding so it fits in a 1/2-height tile
+   Bottom Left: Forecast Table (shrink rows so you see Sunset)
    ========= */
 .bottomLeft{
   padding: 12px;
@@ -318,7 +310,6 @@ body{
 table{
   width:100%;
   height:100%;
-
   border-collapse: separate;
   border-spacing: 0;
   overflow:hidden;
@@ -327,13 +318,16 @@ table{
   background: rgba(0,0,0,0.18);
   border: 1px solid rgba(255,255,255,0.08);
 
-  table-layout: fixed;
+  table-layout: fixed; /* critical */
 }
 
+/* Header tighter */
 thead th{
-  padding: 10px 8px;
+  padding: 8px 8px;
   font-size: var(--table-head);
-  color: rgba(255,255,255,0.80);
+  line-height: 1.1;
+
+  color: rgba(255,255,255,0.82);
   letter-spacing: 0.4px;
   text-transform: uppercase;
 
@@ -345,9 +339,12 @@ thead th{
   white-space: nowrap;
 }
 
+/* Body rows tighter (this is what reveals the Sunset row) */
 tbody td{
-  padding: 9px 8px;
+  padding: 6px 8px;
   font-size: var(--table-cell);
+  line-height: 1.1;
+
   color: var(--muted);
   border-bottom: 1px solid rgba(255,255,255,0.06);
 
@@ -356,21 +353,24 @@ tbody td{
   white-space: nowrap;
 }
 
+/* Left labels */
 tbody td:first-child{
-  width: 46%;
-  color: rgba(255,255,255,0.86);
-  font-weight: 750;
-  letter-spacing: 0.2px;
+  width: 44%;
+  color: rgba(255,255,255,0.88);
+  font-weight: 760;
+  letter-spacing: 0.15px;
 
   background: rgba(255,255,255,0.03);
   border-right: 1px solid rgba(255,255,255,0.06);
 }
 
+/* Center the forecast values */
 tbody td:not(:first-child),
 thead th:not(:first-child){
   text-align:center;
 }
 
+/* Zebra rows */
 tbody tr:nth-child(odd) td{ background: rgba(255,255,255,0.018); }
 tbody tr:nth-child(even) td{ background: rgba(255,255,255,0.028); }
 tbody tr:nth-child(odd) td:first-child{ background: rgba(255,255,255,0.040); }
