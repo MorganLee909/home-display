@@ -15,7 +15,7 @@ const setDateTime = ()=>{
 
 const renderForecast = (f)=>{
     const head = document.getElementById("forecastHead").children[0];
-    const body = document.getElementById("forecastBody");
+    const tbody = document.getElementById("forecastBody");
 
     for(let i = 0; i < f.length; i++){
         let date = new Date(f[i].date);
@@ -25,13 +25,13 @@ const renderForecast = (f)=>{
             year: "2-digit"
         });
 
-        body.children[0].children[i+1] = `${f[i].day.mintemp_f} - ${f[i].day.maxtemp_f}`;
-        body.children[1].children[i+1] = `${f[i].day.avghumidity}%`;
-        body.children[2].children[i+1] = `${f[i].day.daily_chance_of_rain}%`;
-        body.children[3].children[i+1] = f[i].day.totalprecip_in;
-        body.children[4].children[i+1] = f[i].day.maxwind_mph;
-        body.children[5].children[i+1] = f[i].astro.sunrise;
-        body.children[6].children[i+1] = f[i].astro.sunset;
+        tbody.children[0].children[i+1].textContent = `${f[i].day.mintemp_f} - ${f[i].day.maxtemp_f}`;
+        tbody.children[1].children[i+1].textContent = `${f[i].day.avghumidity}%`;
+        tbody.children[2].children[i+1].textContent = `${f[i].day.daily_chance_of_rain}%`;
+        tbody.children[3].children[i+1].textContent = f[i].day.totalprecip_in;
+        tbody.children[4].children[i+1].textContent = f[i].day.maxwind_mph;
+        tbody.children[5].children[i+1].textContent = f[i].astro.sunrise;
+        tbody.children[6].children[i+1].textContent = f[i].astro.sunset;
     }
 }
 
