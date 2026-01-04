@@ -18,7 +18,8 @@ const renderForecast = (f)=>{
     const tbody = document.getElementById("forecastBody");
 
     for(let i = 0; i < f.length; i++){
-        let date = new Date(f[i].date);
+        const [y, m, d] = f[i].date.split("-").map(Number);
+        const date = new Date(y, m-1, d);
         head.children[i+1].textContent = date.toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
