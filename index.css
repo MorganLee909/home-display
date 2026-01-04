@@ -1,31 +1,38 @@
 /* =========
-   Dark 4K TV Dashboard Theme (grid-only, no media queries)
-   Copy/paste into <style>...</style>
+   Dark TV Dashboard Theme (4K grid-hardened, no media queries)
    ========= */
 
 :root{
   /* Core palette */
   --bg: #0b0f16;
-  --surface: rgba(255,255,255,0.06);
-  --surface-2: rgba(255,255,255,0.09);
   --border: rgba(255,255,255,0.10);
 
   --text: rgba(255,255,255,0.92);
   --muted: rgba(255,255,255,0.68);
-  --faint: rgba(255,255,255,0.52);
 
   /* Accents */
-  --accent: #4cc9f0;     /* cool cyan */
-  --accent-2: #a78bfa;   /* soft purple */
+  --accent: #4cc9f0;
+  --accent-2: #a78bfa;
 
-  /* 4K layout tuning */
-  --pad: 26px;
-  --gap: 22px;
-  --radius: 22px;
-  --radius-sm: 14px;
+  /* Layout */
+  --outer-pad: 18px;
+  --gap: 16px;
+  --radius: 18px;
+  --radius-sm: 12px;
 
   /* Type */
   --font: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", Arial, sans-serif;
+
+  /* 4K-safe sizing (kept conservative so nothing can dominate) */
+  --time-size: clamp(44px, 3.1vh, 76px);
+  --date-size: clamp(18px, 1.35vh, 26px);
+
+  --h2-size: clamp(16px, 1.25vh, 22px);
+  --cond-size: clamp(18px, 1.55vh, 26px);
+
+  --info-size: clamp(14px, 1.25vh, 20px);
+  --table-head: clamp(12px, 1.10vh, 16px);
+  --table-cell: clamp(13px, 1.18vh, 18px);
 }
 
 *{ box-sizing:border-box; }
@@ -36,62 +43,78 @@ body{
   font-family: var(--font);
   color: var(--text);
   background:
-    radial-gradient(1600px 800px at 20% 10%, rgba(76,201,240,0.12), transparent 60%),
-    radial-gradient(1200px 700px at 85% 20%, rgba(167,139,250,0.10), transparent 55%),
-    radial-gradient(1200px 900px at 50% 100%, rgba(255,255,255,0.06), transparent 55%),
+    radial-gradient(1200px 600px at 20% 10%, rgba(76,201,240,0.12), transparent 60%),
+    radial-gradient(900px 500px at 85% 20%, rgba(167,139,250,0.10), transparent 55%),
+    radial-gradient(800px 600px at 50% 100%, rgba(255,255,255,0.06), transparent 55%),
     var(--bg);
-  overflow:hidden; /* never scroll on TV */
+  overflow:hidden;
+
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
 }
 
 /* =========
    Grid Layout (2x2 always)
+   Key fixes:
+   - minmax(0, ...) on tracks so content can't force columns wider
+   - min-width/min-height:0 on items so flex children can shrink
    ========= */
 .grid{
   height:100vh;
   width:100vw;
-  padding: var(--pad);
+  padding: var(--outer-pad);
+
   display:grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.45fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
   grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--gap);
+
   filter: brightness(0.98);
 }
 
-/* Ensure grid children can shrink and never overflow their column */
+.grid > *{
+  min-width: 0;
+  min-height: 0;
+}
+
 .topLeft, .topRight, .bottomLeft, .bottomRight{
   position:relative;
   min-width: 0;
   min-height: 0;
+
   border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
   border: 1px solid var(--border);
   box-shadow:
-    0 14px 40px rgba(0,0,0,0.38),
+    0 10px 30px rgba(0,0,0,0.35),
     inset 0 1px 0 rgba(255,255,255,0.06);
   overflow:hidden;
 }
 
 /* =========
    Top Left: Date/Time + Current Weather
+   Tightened to prevent it from swallowing the tile.
    ========= */
 .topLeft{
   display:flex;
   flex-direction:column;
-  padding: var(--pad);
-  gap: 18px;
   min-width: 0;
   min-height: 0;
+
+  padding: 14px;
+  gap: 12px;
 }
 
 /* Date/Time card */
 .dateTime{
   flex: 0 0 auto;
+  min-width: 0;
+
   display:flex;
   flex-direction:column;
-  gap: 8px;
-  padding: 16px 18px;
+  gap: 6px;
+
+  padding: 12px 14px;
   border-radius: var(--radius-sm);
   background: rgba(0,0,0,0.22);
   border: 1px solid rgba(255,255,255,0.08);
@@ -99,49 +122,56 @@ body{
 
 #date{
   margin:0;
-  font-size: clamp(20px, 1.05vw, 34px);
+  font-size: var(--date-size);
   letter-spacing: 0.4px;
   color: var(--muted);
 }
 
 #time{
   margin:0;
-  font-size: clamp(52px, 2.6vw, 104px);
-  font-weight: 720;
-  letter-spacing: 1.2px;
+  font-size: var(--time-size);
+  font-weight: 750;
+  letter-spacing: 0.8px;
   line-height: 1.02;
   color: var(--text);
+
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Weather block */
 .weather{
   flex: 1 1 auto;
-  min-height: 0;
   min-width: 0;
+  min-height: 0;
+
   display:flex;
 }
 
 .weatherBlock{
   flex: 1 1 auto;
-  min-height: 0;
   min-width: 0;
-  padding: 18px;
+  min-height: 0;
+
+  padding: 12px;
   border-radius: var(--radius-sm);
   background:
-    radial-gradient(900px 320px at 20% 10%, rgba(76,201,240,0.10), transparent 60%),
+    radial-gradient(600px 240px at 20% 10%, rgba(76,201,240,0.10), transparent 60%),
     rgba(0,0,0,0.18);
   border: 1px solid rgba(255,255,255,0.08);
+
   display:flex;
   flex-direction:column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .weatherBlock h2{
   margin:0;
-  font-size: clamp(18px, 0.9vw, 26px);
-  font-weight: 750;
-  letter-spacing: 0.6px;
-  color: var(--text);
+  font-size: var(--h2-size);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+
   display:flex;
   align-items:center;
   gap: 10px;
@@ -156,32 +186,35 @@ body{
   box-shadow: 0 0 18px rgba(76,201,240,0.35);
 }
 
-/* Condition row: icon + text */
+/* Condition row */
 .condition{
   display:flex;
   align-items:center;
-  gap: 14px;
-  padding: 12px 14px;
-  border-radius: 16px;
+  gap: 12px;
+
+  padding: 10px 12px;
+  border-radius: 14px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.06);
+
   min-width: 0;
 }
 
 .condition img{
-  width: clamp(48px, 2.0vw, 72px);
-  height: clamp(48px, 2.0vw, 72px);
+  width: clamp(42px, 3.0vh, 64px);
+  height: clamp(42px, 3.0vh, 64px);
   object-fit: contain;
-  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.45));
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.45));
   flex: 0 0 auto;
 }
 
 .conditionText{
   margin:0;
-  font-size: clamp(20px, 1.05vw, 34px);
-  font-weight: 680;
+  font-size: var(--cond-size);
+  font-weight: 700;
   letter-spacing: 0.2px;
-  color: var(--text);
+
+  min-width: 0;
   overflow:hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -191,44 +224,51 @@ body{
 .weatherInfo{
   display:grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 12px 14px;
-  margin-top: 2px;
+  gap: 10px 12px;
+
   min-width: 0;
+  min-height: 0;
 }
 
 .weatherInfo p{
   margin:0;
-  padding: 12px 14px;
-  border-radius: 16px;
+  padding: 10px 12px;
+  border-radius: 14px;
+
   background: rgba(255,255,255,0.035);
   border: 1px solid rgba(255,255,255,0.06);
-  font-size: clamp(16px, 0.85vw, 26px);
+
+  font-size: var(--info-size);
   color: var(--muted);
+
   display:flex;
   align-items:center;
   justify-content:space-between;
+
   min-width: 0;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.weatherInfo p strong{
+#temp, #feels, #wind, #humidity{
   color: var(--text);
+  font-weight: 650;
 }
-
-#temp, #feels, #wind, #humidity{ color: var(--text); }
-#temp{ font-weight: 750; }
-#feels, #wind, #humidity{ font-weight: 600; }
 
 /* =========
    Top Right: Radar Image
    ========= */
 .topRight{
-  padding: 14px;
+  padding: 12px;
   display:flex;
   align-items:center;
   justify-content:center;
+
   background:
-    radial-gradient(1200px 800px at 70% 10%, rgba(167,139,250,0.09), transparent 55%),
+    radial-gradient(800px 520px at 70% 10%, rgba(167,139,250,0.09), transparent 55%),
     rgba(0,0,0,0.10);
+
   min-width: 0;
   min-height: 0;
 }
@@ -237,35 +277,39 @@ body{
   width:100%;
   height:100%;
   object-fit: cover;
-  border-radius: calc(var(--radius) - 8px);
+  border-radius: calc(var(--radius) - 6px);
   border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 18px 55px rgba(0,0,0,0.50);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.45);
   filter: contrast(1.04) saturate(1.05);
   display:block;
 }
 
-/* Label overlay */
 .topRight::after{
   content:"Radar";
   position:absolute;
-  top: 14px;
-  left: 16px;
-  padding: 8px 12px;
-  font-size: clamp(12px, 0.65vw, 18px);
-  letter-spacing: 0.8px;
+  top: 12px;
+  left: 14px;
+  padding: 6px 10px;
+
+  font-size: 14px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.74);
+  color: rgba(255,255,255,0.72);
+
   background: rgba(0,0,0,0.40);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 999px;
-  backdrop-filter: blur(8px);
 }
 
 /* =========
    Bottom Left: Forecast Table
+   Key fixes:
+   - table-layout: fixed
+   - ellipsis
+   - reduced padding so it fits in a 1/2-height tile
    ========= */
 .bottomLeft{
-  padding: 14px;
+  padding: 12px;
   display:flex;
   min-width: 0;
   min-height: 0;
@@ -274,56 +318,59 @@ body{
 table{
   width:100%;
   height:100%;
+
   border-collapse: separate;
   border-spacing: 0;
   overflow:hidden;
-  border-radius: calc(var(--radius) - 8px);
+
+  border-radius: calc(var(--radius) - 6px);
   background: rgba(0,0,0,0.18);
   border: 1px solid rgba(255,255,255,0.08);
-  table-layout: fixed; /* prevents the left column from blowing out widths */
+
+  table-layout: fixed;
 }
 
-/* Head row */
 thead th{
-  padding: 14px 10px;
-  font-size: clamp(13px, 0.70vw, 18px);
-  color: rgba(255,255,255,0.82);
-  letter-spacing: 0.7px;
+  padding: 10px 8px;
+  font-size: var(--table-head);
+  color: rgba(255,255,255,0.80);
+  letter-spacing: 0.4px;
   text-transform: uppercase;
+
   background: linear-gradient(90deg, rgba(76,201,240,0.10), rgba(167,139,250,0.08));
   border-bottom: 1px solid rgba(255,255,255,0.10);
+
   overflow:hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 tbody td{
-  padding: 14px 10px;
-  font-size: clamp(14px, 0.78vw, 20px);
+  padding: 9px 8px;
+  font-size: var(--table-cell);
   color: var(--muted);
   border-bottom: 1px solid rgba(255,255,255,0.06);
+
   overflow:hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* Left column labels */
 tbody td:first-child{
-  width: 42%;
-  color: rgba(255,255,255,0.88);
-  font-weight: 720;
+  width: 46%;
+  color: rgba(255,255,255,0.86);
+  font-weight: 750;
   letter-spacing: 0.2px;
+
   background: rgba(255,255,255,0.03);
   border-right: 1px solid rgba(255,255,255,0.06);
 }
 
-/* Center values */
 tbody td:not(:first-child),
 thead th:not(:first-child){
   text-align:center;
 }
 
-/* Zebra rows */
 tbody tr:nth-child(odd) td{ background: rgba(255,255,255,0.018); }
 tbody tr:nth-child(even) td{ background: rgba(255,255,255,0.028); }
 tbody tr:nth-child(odd) td:first-child{ background: rgba(255,255,255,0.040); }
@@ -335,10 +382,11 @@ tbody tr:last-child td{ border-bottom: none; }
    Bottom Right: YouTube iframe
    ========= */
 .bottomRight{
-  padding: 14px;
+  padding: 12px;
   background:
-    radial-gradient(1400px 900px at 20% 20%, rgba(76,201,240,0.08), transparent 55%),
+    radial-gradient(900px 600px at 20% 20%, rgba(76,201,240,0.08), transparent 55%),
     rgba(0,0,0,0.10);
+
   min-width: 0;
   min-height: 0;
 }
@@ -347,15 +395,13 @@ tbody tr:last-child td{ border-bottom: none; }
   width:100%;
   height:100%;
   border: 1px solid rgba(255,255,255,0.10);
-  border-radius: calc(var(--radius) - 8px);
-  box-shadow: 0 22px 70px rgba(0,0,0,0.58);
+  border-radius: calc(var(--radius) - 6px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.55);
   background: #000;
   display:block;
 }
 
-/* =========
-   Focus styling (TV remotes / keyboards)
-   ========= */
+/* Focus styling */
 :focus{
   outline: 2px solid rgba(76,201,240,0.55);
   outline-offset: 2px;
