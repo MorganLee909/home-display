@@ -1,6 +1,6 @@
 /* =========
-   Dark TV Dashboard Theme
-   Drop this into your <style>...</style>
+   Dark TV Dashboard Theme (TV-safe)
+   Copy/paste into <style>...</style>
    ========= */
 
 :root{
@@ -32,6 +32,7 @@
 
 *{ box-sizing:border-box; }
 html, body{ height:100%; width:100%; }
+
 body{
   margin:0;
   font-family: var(--font);
@@ -42,30 +43,35 @@ body{
     radial-gradient(800px 600px at 50% 100%, rgba(255,255,255,0.06), transparent 55%),
     var(--bg);
   overflow:hidden; /* TV: never scroll */
-}
 
-/* Optional: make text crisp on TVs */
-body{
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
 }
 
 /* =========
-   Grid Layout
+   Layout: flex fallback + grid when supported
    ========= */
+
+/* Fallback first (works even on weak TV browsers) */
 .grid{
   height:100vh;
   width:100vw;
   padding: 18px;
-  display:grid;
-  grid-template-columns: 1.1fr 1.4fr;
-  grid-template-rows: 1fr 1fr;
+
+  display:flex;
+  flex-wrap:wrap;
   gap: var(--gap);
+
+  filter: brightness(0.98);
 }
 
-.topLeft, .topRight, .bottomLeft, .bottomRight{
+/* 2x2 tiles using flex fallback */
+.grid > .topLeft,
+.grid > .topRight,
+.grid > .bottomLeft,
+.grid > .bottomRight{
   position:relative;
-  min-height: 0; /* important so children can size/clip inside grid */
+  min-height: 0;
   border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
   border: 1px solid var(--border);
@@ -73,6 +79,46 @@ body{
     0 10px 30px rgba(0,0,0,0.35),
     inset 0 1px 0 rgba(255,255,255,0.06);
   overflow:hidden;
+
+  flex: 1 1 calc(50% - (var(--gap) / 2));
+  height: calc(50vh - (18px + (var(--gap) / 2)));
+  min-width: 520px;
+}
+
+/* Prefer CSS Grid if supported */
+@supports (display: grid){
+  .grid{
+    display:grid;
+    grid-template-columns: 1.1fr 1.4fr;
+    grid-template-rows: 1fr 1fr;
+    gap: var(--gap);
+  }
+
+  .grid > .topLeft,
+  .grid > .topRight,
+  .grid > .bottomLeft,
+  .grid > .bottomRight{
+    height: auto;
+    min-width: 0;
+  }
+}
+
+/* Only stack on truly small screens (avoid TVs triggering this) */
+@media (max-width: 720px){
+  .grid{
+    display:flex;
+    flex-direction:column;
+    flex-wrap:nowrap;
+  }
+
+  .grid > .topLeft,
+  .grid > .topRight,
+  .grid > .bottomLeft,
+  .grid > .bottomRight{
+    flex: 0 0 auto;
+    height: auto;
+    min-width: 0;
+  }
 }
 
 /* =========
@@ -110,6 +156,10 @@ body{
   letter-spacing: 1.2px;
   line-height: 1.05;
   color: var(--text);
+}
+
+@media (max-width: 720px){
+  #time{ font-size: 48px; }
 }
 
 /* Weather block */
@@ -187,6 +237,10 @@ body{
   margin-top: 2px;
 }
 
+@media (max-width: 720px){
+  .weatherInfo{ grid-template-columns: 1fr; }
+}
+
 .weatherInfo p{
   margin:0;
   padding: 10px 12px;
@@ -205,9 +259,7 @@ body{
 }
 
 /* If you don't wrap labels/values in <strong>, still make the numbers pop a bit */
-#temp, #feels, #wind, #humidity{
-  color: var(--text);
-}
+#temp, #feels, #wind, #humidity{ color: var(--text); }
 #temp{ font-size: 20px; font-weight: 650; }
 #feels, #wind, #humidity{ font-weight: 550; }
 
@@ -234,7 +286,6 @@ body{
   filter: contrast(1.04) saturate(1.05);
 }
 
-/* Subtle label overlay (optional, doesn’t require HTML changes) */
 .topRight::after{
   content:"Radar";
   position:absolute;
@@ -306,23 +357,12 @@ thead th:not(:first-child){
 }
 
 /* Zebra rows */
-tbody tr:nth-child(odd) td{
-  background: rgba(255,255,255,0.018);
-}
-tbody tr:nth-child(even) td{
-  background: rgba(255,255,255,0.028);
-}
-tbody tr:nth-child(odd) td:first-child{
-  background: rgba(255,255,255,0.040);
-}
-tbody tr:nth-child(even) td:first-child{
-  background: rgba(255,255,255,0.055);
-}
+tbody tr:nth-child(odd) td{ background: rgba(255,255,255,0.018); }
+tbody tr:nth-child(even) td{ background: rgba(255,255,255,0.028); }
+tbody tr:nth-child(odd) td:first-child{ background: rgba(255,255,255,0.040); }
+tbody tr:nth-child(even) td:first-child{ background: rgba(255,255,255,0.055); }
 
-/* Remove bottom border on last row */
-tbody tr:last-child td{
-  border-bottom: none;
-}
+tbody tr:last-child td{ border-bottom: none; }
 
 /* =========
    Bottom Right: YouTube iframe
@@ -344,29 +384,10 @@ tbody tr:last-child td{
 }
 
 /* =========
-   TV Safety: prevent accidental focus outlines being huge, but keep accessible
+   Focus styling (TV remotes / keyboards)
    ========= */
 :focus{
   outline: 2px solid rgba(76,201,240,0.55);
   outline-offset: 2px;
-}
-
-/* =========
-   Responsive scaling (if you ever use it on smaller screens)
-   ========= */
-@media (max-width: 1100px){
-  .grid{
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
-  }
-  #time{ font-size: 48px; }
-  .weatherInfo{ grid-template-columns: 1fr; }
-}
-
-/* =========
-   Optional: reduce “burn-in”-like static sharp edges by a tiny overall dim
-   ========= */
-.grid{
-  filter: brightness(0.98);
 }
 
