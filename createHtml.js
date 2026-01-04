@@ -4,16 +4,16 @@ import htmlMinifier from "html-minifier-terser";
 import fsSync from "fs";
 
 const fs = fsSync.promises;
-const isProduction = false;
+const isProduction = true;
 
 const esbuildProm = esbuild.build({
-    entryPoints: [`${import.meta.dirname}/js/index.js`, `${import.meta.dirname}/css/index.css`],
+    entryPoints: [`${import.meta.dirname}/index.js`, `${import.meta.dirname}/index.css`],
     bundle: true,
     minify: isProduction,
     write: false,
     outdir: import.meta.dirname
 });
-const htmlProm = await fs.readFile(`${import.meta.dirname}/index.html`, "utf-8");
+const htmlProm = await fs.readFile(`${import.meta.dirname}/start.html`, "utf-8");
 const [build, html] = await Promise.all([esbuildProm, htmlProm]);
 
 let js, css;
@@ -38,5 +38,5 @@ let data = await htmlMinifier.minify(html, {
 data = data.replace("<script></script>", `<script>${js}</script>`)
 data = data.replace("<style></style>", `<style>${css}</style>`)
 
-await fs.writeFile(`${import.meta.dirname}/build.html`, data);
+await fs.writeFile(`${import.meta.dirname}/index.html`, data);
 console.timeEnd("Build time");
