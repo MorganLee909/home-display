@@ -2,83 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <style>
-            *{margin:0;padding:0;box-sizing:border-box};
-            html, body{
-                height: 100vh;
-                width: 100vw;
-                background: black;
-            }
-            .grid{
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: 1fr 1fr;
-                height: 100vh;
-                width: 100vw;
-                grid-template-areas:
-                    "topLeft topRight"
-                    "bottom bottom";
-                gap: 2px;
-            }
-            .grid > *{
-                background: black;
-                min-height: 0;
-                min-width: 0;
-                overflow: hidden;
-            }
-            .topLeft{
-                display: flex;
-                flex-direction: column;
-                justify-content: space-around;
-                align-items: center;
-                grid-area: topLeft;
-                color: white;
-            }
-            .topRight{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                grid-area: topRight;
-            }
-            .bottom{
-                grid-area: bottom;
-            }
-
-            #date{
-                font-size: 2.2em;
-            }
-            #time{
-                font-size: 1.8em;
-                text-align: center;
-            }
-            .weather{
-                display: flex;
-                justify-content: space-around;
-                width: 100%;
-            }
-            .weatherBlock{
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                position: relative;
-                padding-top: 35px;
-                width: 50%;
-            }
-            .weatherBlock h2{
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                text-align: center;
-            }
-            .topRight img{
-                height: 95%;
-            }
-            .bottom iframe{
-                width: 100%;
-                height: 100%;
-            }
-        </style>
+        <style></style>
     </head>
     <body>
         <div class="grid">
@@ -106,67 +30,66 @@
             <div class="topRight">
                 <img id="radar" src="https://radar.weather.gov/ridge/standard/KLTX_0.gif" alt="radar">
             </div>
-            <div class="bottom">
+            <div class="bottomLeft">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Temp (&deg;F)</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Humidity</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Chance Of Rain</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Precipitation (inches)</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Max Wind (MPH)</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Sunrise</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Sunset</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="bottomRight">
                 <iframe src="https://www.youtube-nocookie.com/embed/4nMfRpesYfw?si=O9Up2lQKNo8v9gi2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
         </div>
+        <script></script>
     </body>
-    <script>
-        const setDateTime = ()=>{
-            const dateTime = new Date();
-            document.getElementById("date").textContent = dateTime.toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            });
-            document.getElementById("time").textContent = dateTime.toLocaleTimeString("en-US", {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true
-            });
-        }
-
-        const getWeather = ()=>{
-            fetch("https://api.weatherapi.com/v1/current.json?key=519f51763fa8477b864184849251502&q=29576&aqi=no", {
-                method: "get"
-            })
-                .then(r=>r.json())
-                .then((response)=>{
-                    const tempDisplay = `Temperature: ${response.current.temp_f}\u00B0F`;
-                    document.getElementById("temp").textContent = tempDisplay;
-
-                    const feelsLike = `Feels Like: ${response.current.feelslike_f}\u00B0F`;
-                    document.getElementById("feels").textContent = feelsLike;
-
-                    const currentWeatherImage = document.querySelector("#currentWeather img");
-                    currentWeatherImage.src = `https:${response.current.condition.icon}`;
-                    currentWeatherImage.alt = response.current.condition.text;
-
-                    const currentWeatherText = document.querySelector("#currentWeather .conditionText");
-                    currentWeatherText.textContent = response.current.condition.text;
-
-                    const currentWind = `Wind: ${response.current.wind_mph}mph ${response.current.wind_dir}`;
-                    document.getElementById("wind").textContent = currentWind;
-
-                    const humidity = `Humidity: ${response.current.humidity}%`;
-                    document.getElementById("humidity").textContent = humidity;
-                })
-                .catch((err)=>{
-                    console.log(err);
-                });
-        }
-
-        const getRadarImage = () =>{
-            const img = document.getElementById("radar");
-            const base = img.src.split("?")[0];
-            img.src = base + "?t=" + Date.now();
-        }
-
-        getWeather();
-        setInterval(getWeather, 60000);
-        setDateTime();
-        setInterval(setDateTime, 10000);
-        setInterval(getRadarImage, 10 * 1000);
-    </script>
 </html>
